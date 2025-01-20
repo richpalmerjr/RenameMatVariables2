@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<header>
+  <div class="container-fluid p-2">
+    <h1>{{title}}</h1>
+  </div>
+</header>
+
+<body>
+  <div class="container-fluid p-2 bg-secondary text-white" id="code-input">
+    <label for="comment">
+      <h5>Code Input:</h5>
+    </label>
+    <textarea class="form-control" rows="9" id="comment" name="text" placeholder="M-AT Code Input"
+      [(ngModel)]="codeInput"></textarea>
+  </div>
+  <div class="container-fluid p-2 bg-secondary text-white" id="code-output">
+    <label for="comment">
+      <h5>Code Output:</h5>
+    </label>
+    <textarea class="form-control" rows="9" id="comment" name="text" placeholder="M-AT Code Output"
+      [(ngModel)]="codeOutput"></textarea>
+  </div>
+</body>
+
+<footer>
+  <div class="d-flex justify-content-end p-4">
+    <button type="button" class="btn btn-success btn-lg" style="margin-right: 10px;"
+      (click)="convertVariables(codeInput)" data-bs-toggle="modal" data-bs-target="#renameVariableModal">Rename Variables</button>
+    <button type="button" class="btn btn-danger btn-lg" (click)="clearForms()">Clear</button>
+  </div>
+</footer>
+
+<div class="modal" id="renameVariableModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Rename Variables</h4>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="updateCallSubs" name="updateCallSubs" value="yes" checked>
+          <label class="form-check-label" for="updateCallSubs">Update CallSubs</label>
+        </div>
+        <br>
+        <div *ngFor="let variable of singleInputVariables">
+          <form>
+            <div class="input-group">
+              <span class="input-group-text" style="width: 40px;">{{variable}}</span>
+              <input type="text" class="form-control" placeholder="Rename To" id={{variable}}>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="renameVariables()">Okay</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="I am literally adding this just to update the HTML to see if it gets updated"></div>
