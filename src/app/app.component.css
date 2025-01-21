@@ -1,0 +1,8 @@
+/* In your stylesheet or within <style> tags */
+.input-group-text i {  
+    color: blue; 
+    cursor: pointer; 
+    font-size: 1.4rem; /* Increased size */
+    margin-left: 8px;  /* More spacing */
+    vertical-align: middle; /* Better vertical alignment */ 
+  }

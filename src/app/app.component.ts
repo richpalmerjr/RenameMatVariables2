@@ -54,6 +54,7 @@ export class AppComponent {
   updateCallSubs: any = true; // checkbox on if CallSubs should be updated
   title = 'Rename Single Letter M-AT Variables'; // page title
   updatedValues: any = {}; // dictionary of new variable names {A: NewVariable}
+  variableCode: any = {}; // dictionary of old variable and lines of code {A: [line1,line2]}
 
   // called when clicking the "Rename Variables" button
   convertVariables(codeInput: any) {
@@ -85,6 +86,7 @@ export class AppComponent {
           const message = '\tVariable found: ' + splitStrippedString[i];
           console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
           this.inputVariables.push(splitStrippedString[i]);
+          this.addLineOfCodeToVariable(splitStrippedString[i],line.trim())
         }
       }
 
@@ -100,8 +102,12 @@ export class AppComponent {
       'color: skyblue; font-weight: bold;'
     );
     console.log('');
+    console.log(this.variableCode)
   }
-
+  showCodeLines(variable: string): void {
+    const lines = this.variableCode[variable]; // Access the lines from variableCode
+    alert(`Variable ${variable} is found on lines:\n ${lines.join('\n')}`);
+  }
   storeSpecialCharacters(line: string) {
     const specialChars: string[] = [];
     const callExternalSubRegex = /@CallExternalSub\(([^,]+),([^,]+),([^)]+)\)/g;
@@ -150,6 +156,19 @@ export class AppComponent {
     return [specialChars, strippedString];
   }
 
+  addLineOfCodeToVariable(variable: string, line: string){
+    /*Adds a line number to the list of lines associated with a variable.
+
+  Args:
+    variable: The variable name (e.g., 'A').
+    line: The line number (e.g., 'line4').
+  */
+    if (!(variable in this.variableCode)) {
+      this.variableCode[variable] = []; // Create a new list if the variable doesn't exist
+    }
+    this.variableCode[variable].push(line); // Add the line to the list
+  }
+
   resetVariables() {
     this.codeOutput = '';
     this.inputVariables = [];
@@ -179,6 +198,7 @@ export class AppComponent {
       const value = this.updatedValues[key];
       this.codeOutput += value + ' ';
     }
+    this.codeOutputArray.push(this.codeOutput);
 
     for (let i = 0; i < this.linesOfCode.length; i++) {
       wordsArray = [];
@@ -218,7 +238,6 @@ export class AppComponent {
         if (wordToCheck == "") {
           finalLine += specialChars[specialCharIndex];
           specialCharIndex++;
-
         }
         // else, add the word to the final line
         else {
