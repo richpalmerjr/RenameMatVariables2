@@ -55,7 +55,6 @@ export class AppComponent {
   convertVariables(codeInput: any) {
     this.resetVariables(); // reset any specific variables that need to be reset at the start
     console.clear();
-    console.log("making sure that this gets updated on github")
     console.log(
       '%c ' +
         '==================== START (finding variables) =============================',
@@ -71,7 +70,6 @@ export class AppComponent {
       console.log(line.trim());
 
       const [specialChars, strippedString] = this.storeSpecialCharacters(line);
-      console.log('special characters', specialChars);
 
       // split the string into an array of words
       const splitStrippedString = (strippedString as string).split(' '); // (strippedString as string) is telling the code we know it's a string
@@ -206,9 +204,6 @@ export class AppComponent {
 
       const [specialChars, strippedString] = this.storeSpecialCharacters(line);
 
-      console.log('specialChars', specialChars);
-      console.log('strippedString', strippedString);
-
       // split the string into an array of words
       //const splitStrippedString = (strippedString as string).split(' '); // (strippedString as string) is telling the code we know it's a string
 
@@ -227,27 +222,12 @@ export class AppComponent {
 
       if (word) wordsArray.push(word);
 
-      console.log('splitStrippedString', splitStrippedString);
-      console.log('wordsArray', wordsArray);
-
-      // // find any variables within the split string
-      // for (let i = 0; i < splitStrippedString.length; i++) {
-      //   if (this.isVariable(splitStrippedString[i])) {
-      //     const message = '\tVariable found: ' + splitStrippedString[i];
-      //     console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
-      //     wordsArray.push(this.updatedValues[splitStrippedString[i]]);
-      //   } else {
-      //     wordsArray.push(splitStrippedString[i]);
-      //   }
-      // }
-
       let specialCharIndex = 0;
       let finalLine = "";
 
       // loop on the wordsArray
       for (let j = 0; j < wordsArray.length; j++) {
         let wordToCheck = wordsArray[j];
-        console.log("checking word",wordToCheck)
         // if the word to check is nil, add the special character back
         // to the final string (spaces are considered special characters)
         if (wordToCheck == "") {
@@ -271,7 +251,6 @@ export class AppComponent {
         }
       }
       
-      console.log('FINAL LINE:', finalLine);
       this.codeOutput += '\n' + finalLine;
       this.codeOutputArray.push(finalLine);
 
@@ -287,27 +266,19 @@ export class AppComponent {
   }
 
   updateCallSubsLogic() {
-    console.log('');
-    console.log(
-      '%c ' +
-        '===================== START (updating CallSubs) ============================',
-      'color: skyblue; font-weight: bold;'
-    );
 
     let newCodeOutputArray = [];
 
     for (let i = 0; i < this.codeOutputArray.length; i++) {
       let line = this.codeOutputArray[i];
-      console.log('----------------------------------------------');
-      console.log(line.trim());
 
       if (line.includes('@CallSub')) {
-        const message = '\tCallSub found on line';
+        const message = '\t@CallSub found on line';
         console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
         line = this.updateCallSubString(line);
         newCodeOutputArray.push(line);
       } else if (line.includes('@CallExternalSub')) {
-        const message = '\CallExternalSub found on line';
+        const message = '\t@CallExternalSub found on line';
         console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
         line = this.updateCallExternalSubString(line);
         newCodeOutputArray.push(line);
@@ -321,14 +292,6 @@ export class AppComponent {
       this.codeOutputArray.push(newLine);
       this.codeOutput += newLine + '\n';
     }
-
-    console.log(
-      '%c ' +
-        '====================== END (updating CallSubs) =============================',
-      'color: skyblue; font-weight: bold;'
-    );
-
-    console.log('new code output array', newCodeOutputArray);
   }
 
   // Replaces @CallSub(<string>) with @@<string>()
@@ -361,7 +324,7 @@ export class AppComponent {
     this.updateCallSubs = (
       document.getElementById('updateCallSubs') as HTMLInputElement
     ).checked;
-    console.log('update call subs:', this.updateCallSubs);
+    console.log('Update @CallSubs:', this.updateCallSubs);
   }
 
   isVariable(str: string) {
