@@ -104,7 +104,7 @@ export class AppComponent {
 
   storeSpecialCharacters(line: string) {
     const specialChars: string[] = [];
-    const callExternalSubRegex = /@CallExternalSub\("[^"]*","[^"]*","[^"]*"\)/g;
+    const callExternalSubRegex = /@CallExternalSub\(([^,]+),([^,]+),([^)]+)\)/g;
     const otherSpecialCharsRegex = /([^a-zA-Z0-9])/g;
 
     // Find all special characters and CallExternalSub occurrences with their indices
@@ -262,7 +262,7 @@ export class AppComponent {
         console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
         line = this.updateCallSubString(line);
         newCodeOutputArray.push(line);
-      } else if (line.includes('@CallExternalSub')) {
+      } else if (line.includes('@CallExternalSub\(')) {
         const message = '\t@CallExternalSub found on line';
         console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
         line = this.updateCallExternalSubString(line);
@@ -289,7 +289,7 @@ export class AppComponent {
   // Replaces @CallExternalSub(<string1>,<string2>,<string3>) with @@<string2>:<string3>()
   // i.e. @CallExternalSub("App","AppProgram.ProgramName.C","CodeMember") with @@AppProgram.ProgramName.C:CodeMember()
   updateCallExternalSubString(str: string): string {
-    const regex = /@CallExternalSub\("([^"]+)","([^"]+)","([^"]+)"\)/g
+    const regex = /@CallExternalSub\(([^,]+),([^,]+),([^)]+)\)/g
     return str.replace(regex, '@@$2:$3()')
   }
 
