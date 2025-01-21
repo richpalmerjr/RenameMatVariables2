@@ -307,6 +307,9 @@ export class AppComponent {
         line = this.updateCallSubString(line);
         newCodeOutputArray.push(line);
       } else if (line.includes('@CallExternalSub')) {
+        const message = '\CallExternalSub found on line';
+        console.log('%c ' + message, 'color: limegreen; font-weight: bold;');
+        line = this.updateCallExternalSubString(line);
         newCodeOutputArray.push(line);
       } else {
         newCodeOutputArray.push(line);
@@ -328,9 +331,18 @@ export class AppComponent {
     console.log('new code output array', newCodeOutputArray);
   }
 
+  // Replaces @CallSub(<string>) with @@<string>()
+  // i.e. @CallSub(CodeMember) with @@CodeMember()
   updateCallSubString(str: string): string {
     const regex = /@CallSub\(([^)]+)\)/g;
     return str.replace(regex, '@@$1()');
+  }
+
+  // Replaces @CallExternalSub(<string1>,<string2>,<string3>) with @@<string2>:<string3>()
+  // i.e. @CallExternalSub("App","AppProgram.ProgramName.C","CodeMember") with @@AppProgram.ProgramName.C:CodeMember()
+  updateCallExternalSubString(str: string): string {
+    const regex = /@CallExternalSub\("([^"]+)","([^"]+)","([^"]+)"\)/g
+    return str.replace(regex, '@@$2:$3()')
   }
 
   getNewVariableNames() {
