@@ -5,6 +5,14 @@ import { FormsModule } from '@angular/forms';
 
 /*
 
+***** Using Netlify *****
+    https://renamematvariables2.netlify.app/
+
+    Updating git is all that needs to be done. Netlify will build and deploy automatically:
+        git add .
+        git commit -m "commit message here"
+        git push
+
 To update github:
 
   git commands:
@@ -36,20 +44,16 @@ To get my code back, just in case it gets deleted for some reason
 export class AppComponent {
   @ViewChild('renameVariableModal') myModal!: ElementRef;
 
-  codeInput = '';
-  codeOutput!: any;
-  codeOutputArray: any[] = [];
-  linesOfCode: any = [];
-  inputVariables: any[] = [];
-  singleInputVariables: any[] = [];
-  specialCharacters: any = [];
-  outputVariables = [];
-  updateCallSubs: any = true;
-  title = 'Rename Single Letter M-AT Variables';
-  consoleDebug = false;
-  updatedValues: any = {};
-  lineNumber = 0;
-  variableDeclaration: string = '';
+  codeInput = ''; // the code input block
+  codeOutput!: any; // the code output block
+  codeOutputArray: any[] = []; // array of code for the output block
+  linesOfCode: any = []; // lines of code array
+  inputVariables: any[] = []; // ALL variables that are from the code of the input block
+  singleInputVariables: any[] = []; // all variables from the input code block
+  specialCharacters: any = []; // special characters on line of code 
+  updateCallSubs: any = true; // checkbox on if CallSubs should be updated
+  title = 'Rename Single Letter M-AT Variables'; // page title
+  updatedValues: any = {}; // dictionary of new variable names {A: NewVariable}
 
   // called when clicking the "Rename Variables" button
   convertVariables(codeInput: any) {
@@ -75,6 +79,7 @@ export class AppComponent {
       const splitStrippedString = (strippedString as string).split(' '); // (strippedString as string) is telling the code we know it's a string
 
       // find any variables within the split string
+      // and add to the inputVariables array
       for (let i = 0; i < splitStrippedString.length; i++) {
         if (this.isVariable(splitStrippedString[i])) {
           const message = '\tVariable found: ' + splitStrippedString[i];
@@ -97,24 +102,12 @@ export class AppComponent {
     console.log('');
   }
 
-  storeSpecialCharactersSAVE(line: string) {
-    const specialChars: string[] = [];
-    // this replaces all special characters with a space, while simultaneously
-    // storing all the special characters within the specialChars array
-    const strippedString = line.replace(/[^a-zA-Z0-9\s]/g, (char: string) => {
-      specialChars.push(char);
-      return ' ';
-    });
-    return [specialChars, strippedString];
-  }
-
   storeSpecialCharacters(line: string) {
-    // {A,B,C}@CallExternalSub("Bar","ProgramName.P","codemembername")
     const specialChars: string[] = [];
     const callExternalSubRegex = /@CallExternalSub\("[^"]*","[^"]*","[^"]*"\)/g;
     const otherSpecialCharsRegex = /([^a-zA-Z0-9])/g;
 
-    // 1. Find all special characters and CallExternalSub occurrences with their indices
+    // Find all special characters and CallExternalSub occurrences with their indices
     const allSpecialChars: { index: number; value: string }[] = [];
     let match: any;
 
@@ -168,17 +161,16 @@ export class AppComponent {
 
   renameVariables() {
     let message = '';
+    this.updatedValues = {};
+    this.codeOutput = 'var: ';
+    this.codeOutputArray = [];
+    let wordsArray: any = [];
 
     message =
       '==================== START (renaming variables) ============================';
     console.log('%c ' + message, 'color: skyblue; font-weight: bold;');
 
     // reset any necessary variables
-    this.updatedValues = {};
-    this.variableDeclaration = '';
-    this.codeOutput = 'var: ';
-    this.codeOutputArray = [];
-    let wordsArray: any = [];
 
     // get the new variable names from the modal
     this.getNewVariableNames();
@@ -187,16 +179,10 @@ export class AppComponent {
       const value = this.updatedValues[key];
       this.codeOutput += value + ' ';
     }
-    /*
-     IF{{A}@CallSub(Something123) {B,C}@CallSub(SomethingElse456)}
-     {A,B,C}@CallExternalSub("Bar","ProgramName.P","codemembername")
-    */
 
     for (let i = 0; i < this.linesOfCode.length; i++) {
       wordsArray = [];
       let word = '';
-      let splitStrippedString: any = [];
-
       let line = this.linesOfCode[i].trim();
 
       console.log('-----------------------------------');
@@ -204,11 +190,10 @@ export class AppComponent {
 
       const [specialChars, strippedString] = this.storeSpecialCharacters(line);
 
-      // split the string into an array of words
-      //const splitStrippedString = (strippedString as string).split(' '); // (strippedString as string) is telling the code we know it's a string
-
+      // loop on all characters from the strippedString (string without special characters)
       for (let j = 0; j < strippedString.length; j++) {
         let letter = strippedString[j];
+        // if letter is a space, add the word to the wordsArray
         if (letter == " ") {
           if (word !== "") wordsArray.push(word);
           word = "";
@@ -265,8 +250,8 @@ export class AppComponent {
     console.log('%c ' + message, 'color: skyblue; font-weight: bold;');
   }
 
+  // if replace CallSubs = yes, replace all @CallSub and @CallExternalSub
   updateCallSubsLogic() {
-
     let newCodeOutputArray = [];
 
     for (let i = 0; i < this.codeOutputArray.length; i++) {
@@ -317,8 +302,6 @@ export class AppComponent {
       if (inputElement) {
         this.updatedValues[variable] = inputElement.value;
       }
-      this.variableDeclaration =
-        this.variableDeclaration + ' ' + this.updatedValues[variable];
     });
 
     this.updateCallSubs = (
@@ -327,6 +310,7 @@ export class AppComponent {
     console.log('Update @CallSubs:', this.updateCallSubs);
   }
 
+  // Check if the string is a variable (single letter between A-Z)
   isVariable(str: string) {
     const myRegex = /^[A-Z]$/;
     return myRegex.test(str.trim());
@@ -334,6 +318,6 @@ export class AppComponent {
 
   clearForms() {
     this.codeInput = '';
-    this.codeOutput = '';
+    this.resetVariables()
   }
 }
