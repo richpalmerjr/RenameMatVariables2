@@ -9,7 +9,7 @@
 </header>
 
 <body>
-  <div class="container-fluid p-2 bg-secondary text-white" id="code-input">
+  <div class="container-fluid p-2 bg-danger text-white" id="code-input">
     <label for="comment">
       <h5>Code Input:</h5>
     </label>
@@ -55,10 +55,10 @@
           <form>
             <div class="input-group">
               <span class="input-group-text" style="width: 85px; display: flex; align-items: center;">
-                <i class="bi bi-question-circle-fill" 
-   style="color: #6c757d; cursor: pointer; font-size: 1.4rem; margin-right: 8px; vertical-align: middle;"
-   (click)="showCodeLines(variable)"></i>
-                {{variable}} 
+                <i class="bi bi-question-circle-fill"
+                  style="color: #6c757d; cursor: pointer; font-size: 1.4rem; margin-right: 8px; vertical-align: middle;"
+                  (click)="showCodeLines(variable)"></i>
+                {{variable}}
               </span>
               <input type="text" class="form-control" placeholder="Rename To" id={{variable}}>
             </div>
@@ -75,5 +75,3 @@
     </div>
   </div>
 </div>
-
-<div class="I am literally adding this just to update the HTML to see if it gets updated"></div>
