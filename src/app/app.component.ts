@@ -55,6 +55,7 @@ export class AppComponent {
   title = 'Rename Single Letter M-AT Variables'; // page title
   updatedValues: any = {}; // dictionary of new variable names {A: NewVariable}
   variableCode: any = {}; // dictionary of old variable and lines of code {A: [line1,line2]}
+  variableLinesOfCode = "";
 
   // called when clicking the "Rename Variables" button
   convertVariables(codeInput: any) {
@@ -102,11 +103,9 @@ export class AppComponent {
       'color: skyblue; font-weight: bold;'
     );
     console.log('');
-    console.log(this.variableCode)
   }
   showCodeLines(variable: string): void {
-    const lines = this.variableCode[variable]; // Access the lines from variableCode
-    alert(`Variable ${variable} is found on lines:\n ${lines.join('\n')}`);
+    this.variableLinesOfCode = this.variableCode[variable].join('\n')
   }
   storeSpecialCharacters(line: string) {
     const specialChars: string[] = [];
@@ -175,6 +174,8 @@ export class AppComponent {
     this.singleInputVariables = [];
     this.linesOfCode = [];
     this.updatedValues = {};
+    this.variableLinesOfCode = "";
+    this.variableCode = {}
     return null;
   }
 
